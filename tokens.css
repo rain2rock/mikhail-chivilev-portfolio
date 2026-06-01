@@ -1,0 +1,144 @@
+/* ============================================================
+   Portfolio — Confident & Bold direction
+   Warm cream/bone palette with terracotta accent
+   Manrope for both EN + RU (full Cyrillic support)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* -- Palette --------------------------------------------------- */
+  --bone:        #F2ECDF;   /* page background (warm cream) */
+  --bone-2:      #EBE4D2;   /* secondary surface */
+  --paper:       #FBF7EF;   /* card / elevated surface */
+  --paper-2:     #FFFDF8;   /* deepest elevation */
+  --ink:         #1A1713;   /* primary text / near-black */
+  --ink-2:       #2E2823;   /* secondary text */
+  --ink-3:       #6F6557;   /* muted */
+  --ink-4:       #A89D8B;   /* placeholder */
+  --line:        #E0D8C6;   /* divider */
+  --line-2:      #D2C8B0;   /* stronger divider */
+
+  --accent:      #C8553D;   /* terracotta primary */
+  --accent-2:    #E07A4F;   /* lighter terracotta */
+  --accent-ink:  #8A2E1E;   /* dark terracotta */
+  --accent-soft: #F0D7CB;   /* terracotta wash */
+  --amber:       #D89A2A;   /* secondary amber accent */
+  --amber-soft:  #F2E2BC;
+
+  /* -- Type ------------------------------------------------------ */
+  --font-sans:  'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Display scale (negative tracking for tight headlines) */
+  --t-display-xl: 9.5rem;   /* 152px */
+  --t-display-l:  7rem;     /* 112px */
+  --t-display-m:  5rem;     /* 80px */
+  --t-display-s:  3.5rem;   /* 56px */
+  --t-h1:         3rem;     /* 48px */
+  --t-h2:         2.25rem;  /* 36px */
+  --t-h3:         1.5rem;   /* 24px */
+  --t-body-l:     1.25rem;  /* 20px */
+  --t-body:       1.0625rem;/* 17px */
+  --t-small:      0.9375rem;/* 15px */
+  --t-micro:      0.8125rem;/* 13px */
+  --t-eyebrow:    0.75rem;  /* 12px */
+
+  /* -- Radii / spacing ------------------------------------------ */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+
+  /* -- Shadow --------------------------------------------------- */
+  --shadow-card: 0 1px 0 rgba(26,23,19,0.05), 0 8px 24px -12px rgba(26,23,19,0.10);
+  --shadow-hover: 0 1px 0 rgba(26,23,19,0.05), 0 24px 48px -20px rgba(26,23,19,0.20);
+}
+
+/* -- Base reset ----------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: 'ss01', 'ss02', 'cv11';
+  color: var(--ink);
+  background: var(--bone);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+img { display: block; max-width: 100%; }
+
+/* -- Reusable utility classes --------------------------------- */
+.mono { font-family: var(--font-mono); font-feature-settings: 'zero', 'ss01'; }
+.eyebrow {
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+.eyebrow-accent { color: var(--accent); }
+.tracking-tight { letter-spacing: -0.035em; }
+.tracking-tighter { letter-spacing: -0.05em; }
+
+/* Animated underline */
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.45s cubic-bezier(.7,0,.2,1);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Marquee */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Caret blink */
+@keyframes caret { 50% { opacity: 0; } }
+.caret {
+  display: inline-block;
+  width: 0.45ch;
+  background: var(--accent);
+  margin-left: 4px;
+  animation: caret 1s steps(2, end) infinite;
+  vertical-align: -0.08em;
+}
+
+/* Subtle paper noise (cheap) */
+.paper-noise {
+  position: relative;
+  isolation: isolate;
+}
+.paper-noise::before {
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+  background-image:
+    radial-gradient(rgba(26,23,19,0.025) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+.paper-noise > * { position: relative; z-index: 1; }
+
+/* Selection */
+::selection { background: var(--accent); color: var(--paper-2); }
