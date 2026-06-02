@@ -12,14 +12,14 @@ function CaseTopBar({ lang, setLang }) {
       position: 'sticky', top: 0, zIndex: 50,
       background: 'var(--ink)', color: 'var(--paper-2)',
     }}>
-      <div style={{
+      <div className="r-bar" style={{
         maxWidth: 1280, margin: '0 auto', padding: '14px 40px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24,
       }}>
         <a href="home.html#top" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontWeight: 700, fontSize: 14, letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>{t.name}</span>
         </a>
-        <nav style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+        <nav className="r-topnav" style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
           {Object.entries(t.nav).map(([k, v]) => (
             <a key={k} href={`home.html#${k}`} style={{
               padding: '8px 14px', borderRadius: 999, fontSize: 13, fontWeight: 500,
@@ -60,11 +60,11 @@ function SectionTitle({ children }) {
 }
 
 /* ---- Section renderers ---- */
-function ProseSection({ s }) {
+function ProseSection({ s, first }) {
   return (
-    <section style={{ padding: '64px 0', borderTop: '1px solid var(--line)' }}>
-      <div style={wrap}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 48 }}>
+    <section style={{ padding: '64px 0', borderTop: first ? 'none' : '1px solid var(--line)' }}>
+      <div className="r-pad" style={wrap}>
+        <div className="r-cols-prose" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 48 }}>
           <SectionTitle>{s.title}</SectionTitle>
           <p style={{
             fontSize: 'clamp(18px, 1.9vw, 22px)', lineHeight: 1.6, color: 'var(--ink-2)',
@@ -76,12 +76,12 @@ function ProseSection({ s }) {
   );
 }
 
-function CardsSection({ s }) {
+function CardsSection({ s, first }) {
   return (
-    <section style={{ padding: '64px 0', borderTop: '1px solid var(--line)' }}>
-      <div style={wrap}>
+    <section style={{ padding: '64px 0', borderTop: first ? 'none' : '1px solid var(--line)' }}>
+      <div className="r-pad" style={wrap}>
         {s.title && <SectionTitle>{s.title}</SectionTitle>}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+        <div className="r-2to1" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
           {s.items.map((it, i) => (
             <div key={i} style={{
               padding: 28, background: 'var(--paper-2)', border: '1px solid var(--line)',
@@ -106,14 +106,14 @@ function CardsSection({ s }) {
   );
 }
 
-function ImagesSection({ s, fallbackId, onZoom }) {
+function ImagesSection({ s, fallbackId, onZoom, first }) {
   const cols = s.cols === 3 ? 3 : 2;
   const hasCaption = (i) => s.captions && s.captions[i];
   return (
-    <section style={{ padding: s.title ? '64px 0' : '0 0 16px', borderTop: s.title ? '1px solid var(--line)' : 'none' }}>
-      <div style={wrap}>
+    <section style={{ padding: s.title ? '64px 0' : '0 0 16px', borderTop: (s.title && !first) ? '1px solid var(--line)' : 'none' }}>
+      <div className="r-pad" style={wrap}>
         {s.title && <SectionTitle>{s.title}</SectionTitle>}
-        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 16 }}>
+        <div className="r-imgs" style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 16 }}>
           {s.images.map((src, i) => (
             <figure key={i} style={{
               margin: 0, background: 'var(--paper-2)', border: '1px solid var(--line)',
@@ -133,7 +133,7 @@ function ImagesSection({ s, fallbackId, onZoom }) {
   );
 }
 
-function BeforeAfterSection({ s }) {
+function BeforeAfterSection({ s, first }) {
   const col = (data, isAfter) => (
     <div style={{
       padding: 32, borderRadius: 'var(--r-lg)',
@@ -155,10 +155,10 @@ function BeforeAfterSection({ s }) {
     </div>
   );
   return (
-    <section style={{ padding: '64px 0', borderTop: '1px solid var(--line)' }}>
-      <div style={wrap}>
+    <section style={{ padding: '64px 0', borderTop: first ? 'none' : '1px solid var(--line)' }}>
+      <div className="r-pad" style={wrap}>
         {s.title && <SectionTitle>{s.title}</SectionTitle>}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div className="r-2to1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           {col(s.before, false)}
           {col(s.after, true)}
         </div>
@@ -168,10 +168,11 @@ function BeforeAfterSection({ s }) {
 }
 
 function renderSection(s, i, fallbackId, onZoom) {
-  if (s.type === 'prose') return <ProseSection key={i} s={s} />;
-  if (s.type === 'cards') return <CardsSection key={i} s={s} />;
-  if (s.type === 'images') return <ImagesSection key={i} s={s} fallbackId={fallbackId} onZoom={onZoom} />;
-  if (s.type === 'beforeafter') return <BeforeAfterSection key={i} s={s} />;
+  const first = i === 0;
+  if (s.type === 'prose') return <ProseSection key={i} s={s} first={first} />;
+  if (s.type === 'cards') return <CardsSection key={i} s={s} first={first} />;
+  if (s.type === 'images') return <ImagesSection key={i} s={s} fallbackId={fallbackId} onZoom={onZoom} first={first} />;
+  if (s.type === 'beforeafter') return <BeforeAfterSection key={i} s={s} first={first} />;
   return null;
 }
 
@@ -211,6 +212,8 @@ function CaseStudyPage({ id }) {
   const [zoom, setZoom] = React.useState(null);
   const entry = CASES[id];
   const c = entry && entry[lang];
+  const inDev = id === 'ideals-board-lead';
+  const hazard = 'repeating-linear-gradient(45deg, #FFD400 0 14px, #14110E 14px 28px)';
 
   const goBack = (e) => {
     e.preventDefault();
@@ -222,7 +225,7 @@ function CaseStudyPage({ id }) {
     return (
       <div style={{ background: 'var(--bone)', minHeight: '100vh' }}>
         <CaseTopBar lang={lang} setLang={setLang} />
-        <div style={{ maxWidth: 800, margin: '0 auto', padding: '120px 40px', textAlign: 'center' }}>
+        <div className="r-pad" style={{ maxWidth: 800, margin: '0 auto', padding: '120px 40px', textAlign: 'center' }}>
           <h1 className="tracking-tighter" style={{ fontSize: 64, fontWeight: 800, margin: 0 }}>404</h1>
           <p style={{ fontSize: 18, color: 'var(--ink-3)', marginTop: 16 }}>
             {lang === 'ru' ? 'Кейс не найден.' : 'Case study not found.'}
@@ -244,9 +247,28 @@ function CaseStudyPage({ id }) {
     <div style={{ background: 'var(--bone)', color: 'var(--ink)', minHeight: '100%' }}>
       <CaseTopBar lang={lang} setLang={setLang} />
 
+      {inDev && (
+        <div style={{ background: 'var(--ink)', color: 'var(--paper-2)' }}>
+          <div aria-hidden="true" style={{ height: 12, backgroundImage: hazard }}/>
+          <div className="r-pad" style={{
+            ...wrap, paddingTop: 22, paddingBottom: 22,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            gap: 18, flexWrap: 'wrap', textAlign: 'center',
+          }}>
+            <span style={{
+              fontWeight: 800, fontSize: 16, letterSpacing: '0.06em', textTransform: 'uppercase',
+            }}>{lang === 'ru' ? 'Страница в разработке' : 'Page in development'}</span>
+            <span style={{ fontSize: 15, color: 'rgba(251,247,239,0.6)' }}>
+              {lang === 'ru' ? 'Картинки скоро будут' : 'Images coming soon'}
+            </span>
+          </div>
+          <div aria-hidden="true" style={{ height: 12, backgroundImage: hazard }}/>
+        </div>
+      )}
+
       {/* Hero */}
       <section>
-        <div style={{ ...wrap, paddingTop: 40 }}>
+        <div className="r-pad" style={{ ...wrap, paddingTop: 40 }}>
           <a href="home.html" onClick={goBack} className="link-underline" style={{
             fontSize: 13, color: 'var(--ink-3)', display: 'inline-flex', alignItems: 'center', gap: 8, fontWeight: 500, cursor: 'pointer',
           }}>
@@ -255,7 +277,7 @@ function CaseStudyPage({ id }) {
           </a>
         </div>
 
-        <div style={{ ...wrap, paddingTop: 36, paddingBottom: 48 }}>
+        <div className="r-pad" style={{ ...wrap, paddingTop: 36, paddingBottom: 48 }}>
           <div className="eyebrow eyebrow-accent" style={{ marginBottom: 20 }}>{c.kicker}</div>
           <h1 className="tracking-tighter" style={{
             fontSize: 'clamp(48px, 7vw, 108px)', fontWeight: 800, lineHeight: 0.96, margin: 0, color: 'var(--ink)',
@@ -274,7 +296,7 @@ function CaseStudyPage({ id }) {
         </div>
 
         {entry.intro && (
-          <div style={{ ...wrap, paddingBottom: 8 }}>
+          <div className="r-pad" style={{ ...wrap, paddingBottom: 8 }}>
             <div style={{ borderRadius: 'var(--r-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
               <SmartImage src={entry.intro} fallbackId={entry.art} alt={c.title} aspect="21 / 9" radius="0" onZoom={(src, alt) => setZoom({ src, alt })} />
             </div>
@@ -292,7 +314,7 @@ function CaseStudyPage({ id }) {
       onMouseEnter={(e) => { const el = e.currentTarget.querySelector('.next-title'); if (el) el.style.transform = 'translateX(8px)'; }}
       onMouseLeave={(e) => { const el = e.currentTarget.querySelector('.next-title'); if (el) el.style.transform = 'none'; }}
       >
-        <div style={{ ...wrap, paddingTop: 72, paddingBottom: 72, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 40 }}>
+        <div className="r-pad r-next" style={{ ...wrap, paddingTop: 72, paddingBottom: 72, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 40 }}>
           <div>
             <div className="eyebrow" style={{ color: 'var(--accent-2)', marginBottom: 16 }}>
               {entry.group === 'leadership' ? (lang === 'ru' ? 'Следующий кейс' : 'Next case') : (lang === 'ru' ? 'Следующий проект' : 'Next project')}
@@ -311,29 +333,38 @@ function CaseStudyPage({ id }) {
 
       {/* Contact */}
       <section style={{ background: 'var(--bone-2)' }}>
-        <div style={{ ...wrap, paddingTop: 96, paddingBottom: 56 }}>
+        <div className="r-pad" style={{ ...wrap, paddingTop: 96, paddingBottom: 56 }}>
           <div className="eyebrow eyebrow-accent" style={{ marginBottom: 16 }}>{COPY[lang].sections.contactK}</div>
           <h2 className="tracking-tighter" style={{
             fontSize: 'clamp(44px, 6vw, 92px)', fontWeight: 800, lineHeight: 0.95, margin: '0 0 32px', color: 'var(--ink)',
           }}>
-            {lang === 'ru' ? 'Давайте ' : "Let's "}
-            <span style={{ color: 'var(--accent)', fontStyle: 'italic', fontWeight: 700 }}>
-              {lang === 'ru' ? 'поговорим.' : 'talk.'}
-            </span>
+            {lang === 'ru'
+              ? <span style={{ color: 'var(--accent)', fontStyle: 'italic', fontWeight: 700 }}>Мои контакты</span>
+              : <>Let's <span style={{ color: 'var(--accent)', fontStyle: 'italic', fontWeight: 700 }}>talk.</span></>
+            }
           </h2>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-            <a href="mailto:hello@mikhail.design" style={{
+            <a href="mailto:chivilev.mikhail@gmail.com" style={{
               padding: '14px 22px', borderRadius: 999, background: 'var(--ink)', color: 'var(--paper-2)',
               fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10,
-            }}><Icon.mail /> hello@mikhail.design</a>
-            <a href="#" style={{
+            }}><Icon.mail /> chivilev.mikhail@gmail.com</a>
+            <a href="https://www.linkedin.com/in/mikhail-chivilev-a3b224b5/" target="_blank" rel="noopener noreferrer" style={{
               padding: '14px 22px', borderRadius: 999, background: 'transparent', color: 'var(--ink)',
               border: '1px solid var(--ink)', fontSize: 15, fontWeight: 600,
               display: 'inline-flex', alignItems: 'center', gap: 10,
             }}><Icon.linkedin /> LinkedIn</a>
+            <a href="https://t.me/RainRock" target="_blank" rel="noopener noreferrer" style={{
+              padding: '14px 22px', borderRadius: 999, background: 'transparent', color: 'var(--ink)',
+              border: '1px solid var(--ink)', fontSize: 15, fontWeight: 600,
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+            }}><Icon.send /> Telegram</a>
+            <a href={COPY[lang].cvLink} target="_blank" rel="noopener noreferrer" style={{
+              padding: '14px 22px', borderRadius: 999, background: 'var(--accent)', color: 'var(--paper-2)',
+              fontSize: 15, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 10,
+            }}><Icon.download /> {lang === 'ru' ? 'Скачать резюме (PDF)' : 'Download CV (PDF)'}</a>
           </div>
         </div>
-        <footer style={{
+        <footer className="r-pad r-foot" style={{
           borderTop: '1px solid var(--line)', padding: '24px 40px',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: 1280, margin: '0 auto',
         }}>

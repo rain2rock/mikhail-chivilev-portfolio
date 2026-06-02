@@ -142,3 +142,93 @@ img { display: block; max-width: 100%; }
 
 /* Selection */
 ::selection { background: var(--accent); color: var(--paper-2); }
+
+/* ============================================================
+   Responsive layer
+   Base layout is authored at 1280px via inline styles; these
+   media-query rules collapse the fixed grids, gutters, nav and
+   oversized headings on tablet / phone. !important is required
+   to win over the component inline styles.
+   ============================================================ */
+
+/* Never allow horizontal scroll on small screens */
+@media (max-width: 900px) {
+  html, body { overflow-x: hidden; }
+}
+
+/* ---- Tablet & below (≤900px) -------------------------------- */
+@media (max-width: 900px) {
+  /* Top bar */
+  .r-bar { padding-left: 20px !important; padding-right: 20px !important; }
+  .r-topnav { display: none !important; }
+
+  /* Generic gutter shrink */
+  .r-pad { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* Two-column editorial blocks → single column */
+  .r-cols-2to1 { grid-template-columns: 1fr !important; gap: 36px !important; }
+
+  /* Stats strip 4 → 2 */
+  .r-cols-4to2 { grid-template-columns: 1fr 1fr !important; }
+  .r-cols-4to2 > div { border-right: none !important; }
+
+  /* Skill rows: label / text / number → label + text stacked */
+  .r-skillrow { grid-template-columns: 1fr !important; gap: 8px !important; }
+  .r-skillnum { display: none !important; }
+
+  /* Experience header (title + counter) */
+  .r-exphead { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+
+  /* Experience rows (rail + body) and detail blocks → stack */
+  .r-exprow { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .r-exprow .r-exprail { display: flex !important; gap: 16px !important; align-items: baseline !important; flex-wrap: wrap !important; }
+
+  /* Bento → single column, drop spans */
+  .r-bento { grid-template-columns: 1fr !important; grid-auto-rows: auto !important; }
+  .r-bento > div { grid-column: auto !important; grid-row: auto !important; }
+
+  /* Work index rows */
+  .r-workrow { grid-template-columns: 1fr !important; gap: 14px !important; padding: 28px 0 !important; }
+  .r-workimg { max-width: 100% !important; }
+  .r-workarrow { display: none !important; }
+
+  /* Case: prose, cards, images, before/after */
+  .r-cols-prose { grid-template-columns: 1fr !important; gap: 18px !important; }
+  .r-2to1 { grid-template-columns: 1fr !important; }
+  .r-imgs { grid-template-columns: 1fr !important; }
+
+  /* Case: next-project banner */
+  .r-next { flex-direction: column !important; align-items: flex-start !important; gap: 28px !important; }
+
+  /* Oversized fixed headings → fluid */
+  .r-h2 { font-size: clamp(38px, 9vw, 56px) !important; }
+
+  /* Footers stack */
+  .r-foot { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+
+  /* Experience: company title row wraps, heading scales */
+  .r-exptitle { flex-wrap: wrap !important; gap: 6px !important; }
+  .r-expco { font-size: clamp(30px, 7vw, 40px) !important; }
+}
+
+/* ---- Phone (≤560px) ----------------------------------------- */
+@media (max-width: 560px) {
+  .r-pad { padding-left: 16px !important; padding-right: 16px !important; }
+  .r-bar { padding-left: 16px !important; padding-right: 16px !important; }
+
+  /* Stats strip 2 → 1 on narrow phones */
+  .r-cols-4to2 { grid-template-columns: 1fr 1fr !important; }
+
+  /* Tighten very large vertical rhythm */
+  .r-sec-pad { padding-top: 56px !important; padding-bottom: 56px !important; }
+
+  /* Currently badge: shrink reserved role width */
+  .r-role { min-width: 120px !important; }
+
+  /* Experience metrics: collapse to single-column list so wide
+     numbers / labels never overflow narrow screens */
+  .r-expstats { grid-template-columns: 1fr !important; border-bottom: none !important; }
+  .r-expstatcell { border-right: none !important; border-bottom: 1px solid var(--line) !important; padding: 12px 0 !important; }
+  .r-expstatcell:last-child { border-bottom: none !important; }
+  .r-statnum { font-size: clamp(30px, 9vw, 40px) !important; }
+}

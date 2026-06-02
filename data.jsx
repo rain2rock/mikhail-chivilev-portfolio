@@ -2,7 +2,7 @@
 
 const COPY = {
   en: {
-    name: "Mikhail",
+    name: "Chivilev Mikhail",
     role: "Product Designer",
     nameLine: "Mikhail — Product Designer",
     status: "Open to senior / lead product design roles",
@@ -37,7 +37,7 @@ const COPY = {
     ],
   },
   ru: {
-    name: "Михаил",
+    name: "Чивилев Михаил",
     role: "Продуктовый дизайнер",
     nameLine: "Михаил — продуктовый дизайнер",
     status: "Открыт к senior / lead ролям в продуктовом дизайне",

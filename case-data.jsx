@@ -321,7 +321,7 @@ const CASES = {
           { k: "Связка «процесс — интерфейс»", v: "Сопоставил процессы с экранами и компонентами.\n\nСледил, чтобы UI отражал реальный процесс, а не просто «красивые экраны»." },
           { k: "Работа с разработкой", v: "Проверял реализуемость заранее.\n\nПоддерживал внедрение через спецификации, состояния и ревью." },
         ]},
-        { type: "images", title: "Визуальные примеры", cols: 2, images: [
+        { type: "images", title: "Дизайн", cols: 2, images: [
           "https://rainrock.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F5dc86187-d621-4985-bd4f-aa480cbb1434%2F0ebc8fc3-0226-4ce2-b07a-99a87ba1127c%2Fimage.png?table=block&id=141cc0bc-95f6-80dc-b0d1-d4152b8e4795&spaceId=5dc86187-d621-4985-bd4f-aa480cbb1434&width=1420&userId=&cache=v2",
           "https://rainrock.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F5dc86187-d621-4985-bd4f-aa480cbb1434%2F955954ff-549c-4384-94bf-1ec87d7fb849%2Fimage.png?table=block&id=141cc0bc-95f6-804b-b15f-c87a997869c3&spaceId=5dc86187-d621-4985-bd4f-aa480cbb1434&width=1420&userId=&cache=v2",
           "https://rainrock.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F5dc86187-d621-4985-bd4f-aa480cbb1434%2F5d6d7d3c-3403-4dd7-9d14-006009ce1825%2Fimage.png?table=block&id=141cc0bc-95f6-80d0-82a6-ef9da5ae895e&spaceId=5dc86187-d621-4985-bd4f-aa480cbb1434&width=1420&userId=&cache=v2",
@@ -443,7 +443,7 @@ const CASES = {
           { k: "Системное мышление", v: "Собирал повторяемые паттерны для контента и коммуникаций.\n\nРаботал через шаблоны и масштабируемые структуры." },
           { k: "Совместная работа", v: "Плотно работал с продуктом и разработкой, проверяя реализуемость заранее.\n\nПоддерживал внедрение через спецификации и ревью." },
         ]},
-        { type: "images", title: "Визуальные примеры", cols: 2, images: [
+        { type: "images", title: "Дизайн", cols: 2, images: [
           "https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fb6e03fee-464f-499c-a2f6-bbfa9b40034a%2FSurv_editor_lrg.png?table=block&id=140cc0bc-95f6-803f-815b-eef290e508bd&spaceId=5dc86187-d621-4985-bd4f-aa480cbb1434&width=1420&userId=&cache=v2",
           "https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F571054c5-e8f7-4ad6-bf96-ee676c88c83f%2FSurv_editor.png?table=block&id=140cc0bc-95f6-8006-97fa-d78bd70fa143&spaceId=5dc86187-d621-4985-bd4f-aa480cbb1434&width=1420&userId=&cache=v2",
           "https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F0daf6a0c-1111-4d15-ab01-0b1ff4b8596b%2Fmail.png?table=block&id=140cc0bc-95f6-808b-83e3-cd39aadda151&spaceId=5dc86187-d621-4985-bd4f-aa480cbb1434&width=1420&userId=&cache=v2",
