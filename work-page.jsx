@@ -123,7 +123,7 @@ function WorkIndex() {
             fontSize: 'clamp(40px, 5vw, 80px)', fontWeight: 800, lineHeight: 0.95, margin: '0 0 28px', color: 'var(--ink)',
           }}>
             {lang === 'ru'
-              ? <span style={{ color: 'var(--accent)', fontStyle: 'italic' }}>Мои контакты</span>
+              ? <>Мои <span style={{ color: 'var(--accent)', fontStyle: 'italic' }}>контакты</span></>
               : <>Let's <span style={{ color: 'var(--accent)', fontStyle: 'italic' }}>talk.</span></>
             }
           </h2>

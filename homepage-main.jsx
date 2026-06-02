@@ -32,7 +32,7 @@ function TopBar({ lang, setLang }) {
       position: 'sticky', top: 0, zIndex: 50,
       background: 'var(--ink)', color: 'var(--paper-2)',
     }}>
-      <div style={{
+      <div className="r-bar" style={{
         maxWidth: 1280, margin: '0 auto', padding: '14px 40px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         gap: 24,
@@ -43,7 +43,7 @@ function TopBar({ lang, setLang }) {
         </a>
 
         {/* Nav */}
-        <nav style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+        <nav className="r-topnav" style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
           {Object.entries(t.nav).map(([k, v]) => (
             <a key={k} href={`home.html#${k}`} style={{
               padding: '8px 14px', borderRadius: 999,
@@ -94,7 +94,7 @@ function Hero({ lang }) {
       display: 'flex', flexDirection: 'column',
       borderBottom: '1px solid var(--line)',
     }}>
-      <div style={{
+      <div className="r-pad" style={{
         maxWidth: 1280, margin: '0 auto', width: '100%',
         padding: '96px 40px 80px', flex: 1,
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -124,7 +124,7 @@ function Hero({ lang }) {
             {lang === 'ru' ? 'Сейчас' : 'Currently'}
           </span>
           <span style={{ width: 1, height: 12, background: 'var(--line-2)' }}/>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', minWidth: 200 }}>
+          <span className="r-role" style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', minWidth: 200 }}>
             {role}<span className="caret" style={{ background: 'var(--accent)' }}> </span>
           </span>
         </div>
@@ -161,8 +161,8 @@ function AboutBand({ lang }) {
     <section style={{
       background: 'var(--bone)', borderBottom: '1px solid var(--line)',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '72px 40px' }}>
-        <div style={{
+      <div className="r-pad r-sec-pad" style={{ maxWidth: 1280, margin: '0 auto', padding: '72px 40px' }}>
+        <div className="r-cols-2to1" style={{
           display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 64, alignItems: 'start',
         }}>
           <div>
@@ -175,7 +175,7 @@ function AboutBand({ lang }) {
             }}>{t.summary}</p>
           </div>
 
-          <div style={{
+          <div className="r-cols-4to2" style={{
             display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 0,
             borderTop: '1px solid var(--line-2)',
           }}>
@@ -202,19 +202,19 @@ function Skills({ lang }) {
   const t = COPY[lang];
   return (
     <section id="skills" style={{ borderBottom: '1px solid var(--line)' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 64, alignItems: 'start' }}>
+      <div className="r-pad r-sec-pad" style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 40px' }}>
+        <div className="r-cols-2to1" style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 64, alignItems: 'start' }}>
           <div>
             <div className="eyebrow eyebrow-accent" style={{ marginBottom: 16 }}>
               {t.sections.skillsK}
             </div>
-            <h2 className="tracking-tighter" style={{
+            <h2 className="tracking-tighter r-h2" style={{
               fontSize: 56, fontWeight: 700, lineHeight: 1.0, margin: 0, color: 'var(--ink)',
             }}>{t.sections.skillsT}</h2>
           </div>
           <div style={{ display: 'grid', gap: 0 }}>
             {t.skills.map((s, i) => (
-              <div key={s.k} style={{
+              <div key={s.k} className="r-skillrow" style={{
                 display: 'grid', gridTemplateColumns: '180px 1fr 40px', gap: 24, alignItems: 'baseline',
                 padding: '24px 0',
                 borderTop: i === 0 ? 'none' : '1px solid var(--line)',
@@ -224,7 +224,7 @@ function Skills({ lang }) {
                   color: 'var(--ink)',
                 }}>{s.k}</div>
                 <p style={{ margin: 0, fontSize: 17, lineHeight: 1.55, color: 'var(--ink-2)' }}>{s.v}</p>
-                <div className="mono" style={{ fontSize: 12, color: 'var(--ink-4)', textAlign: 'right' }}>
+                <div className="mono r-skillnum" style={{ fontSize: 12, color: 'var(--ink-4)', textAlign: 'right' }}>
                   {String(i + 1).padStart(2, '0')}
                 </div>
               </div>
@@ -240,13 +240,13 @@ function Skills({ lang }) {
 function ExperienceCard({ exp, lang, expanded, onToggle, index, total }) {
   const t = COPY[lang];
   return (
-    <article style={{
+    <article className="r-exprow" style={{
       display: 'grid', gridTemplateColumns: '180px 1fr', gap: 40,
       padding: '40px 0',
       borderTop: '1px solid var(--line)',
     }}>
       {/* left rail */}
-      <div>
+      <div className="r-exprail">
         <div className="mono" style={{ fontSize: 12, color: 'var(--ink-4)' }}>
           {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
         </div>
@@ -261,8 +261,8 @@ function ExperienceCard({ exp, lang, expanded, onToggle, index, total }) {
 
       {/* main */}
       <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24, marginBottom: 6 }}>
-          <h3 className="tracking-tight" style={{
+        <div className="r-exptitle" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24, marginBottom: 6 }}>
+          <h3 className="tracking-tight r-expco" style={{
             fontSize: 40, fontWeight: 700, margin: 0, color: 'var(--ink)', lineHeight: 1.05,
           }}>{exp.company}</h3>
           {exp.link && (
@@ -282,17 +282,17 @@ function ExperienceCard({ exp, lang, expanded, onToggle, index, total }) {
 
         {/* Numbers — key metrics */}
         {exp.stats && exp.stats.length > 0 && (
-          <div style={{
+          <div className="r-expstats" style={{
             display: 'grid', gridTemplateColumns: `repeat(${exp.stats.length}, 1fr)`,
             gap: 0, marginBottom: 24,
             borderTop: '1px solid var(--line-2)', borderBottom: '1px solid var(--line)',
           }}>
             {exp.stats.map((s, i) => (
-              <div key={i} style={{
+              <div key={i} className="r-expstatcell" style={{
                 padding: '20px 18px 18px',
                 borderRight: i < exp.stats.length - 1 ? '1px solid var(--line)' : 'none',
               }}>
-                <div className="tracking-tighter" style={{
+                <div className="tracking-tighter r-statnum" style={{
                   fontSize: 40, fontWeight: 800, lineHeight: 1, color: 'var(--ink)',
                 }}>{s.v}</div>
                 <div style={{ marginTop: 10, fontSize: 12.5, color: 'var(--ink-3)', lineHeight: 1.35 }}>{s.l}</div>
@@ -322,7 +322,7 @@ function ExperienceCard({ exp, lang, expanded, onToggle, index, total }) {
         {expanded && (
           <div style={{ marginTop: 32, display: 'grid', gap: 28 }}>
             {exp.blocks.map(block => (
-              <div key={block.k} style={{
+              <div key={block.k} className="r-exprow" style={{
                 display: 'grid', gridTemplateColumns: '180px 1fr', gap: 24,
               }}>
                 <div style={{
@@ -359,13 +359,13 @@ function Experience({ lang }) {
     <section id="experience" style={{
       background: 'var(--paper-2)', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 40px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: 48 }}>
+      <div className="r-pad r-sec-pad" style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 40px' }}>
+        <div className="r-exphead" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: 48 }}>
           <div>
             <div className="eyebrow eyebrow-accent" style={{ marginBottom: 16 }}>
               {t.sections.experienceK}
             </div>
-            <h2 className="tracking-tighter" style={{
+            <h2 className="tracking-tighter r-h2" style={{
               fontSize: 56, fontWeight: 700, lineHeight: 1.0, margin: 0, color: 'var(--ink)', maxWidth: 720,
             }}>{t.sections.experienceT}</h2>
           </div>
@@ -399,13 +399,13 @@ function Leadership({ lang }) {
       background: 'var(--ink)', color: 'var(--paper-2)',
       borderBottom: '1px solid var(--line)',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 64, marginBottom: 56 }}>
+      <div className="r-pad r-sec-pad" style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 40px' }}>
+        <div className="r-cols-2to1" style={{ display: 'grid', gridTemplateColumns: '5fr 7fr', gap: 64, marginBottom: 56 }}>
           <div>
             <div className="eyebrow" style={{ color: 'var(--accent-2)', marginBottom: 16 }}>
               {t.sections.leadershipK}
             </div>
-            <h2 className="tracking-tighter" style={{
+            <h2 className="tracking-tighter r-h2" style={{
               fontSize: 64, fontWeight: 700, lineHeight: 0.98, margin: 0, color: 'var(--paper-2)',
             }}>{t.sections.leadershipT}</h2>
           </div>
@@ -416,8 +416,10 @@ function Leadership({ lang }) {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
-          {items.map((it, i) => (
+        <div className="r-cols-2to1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+          {items.map((it, i) => {
+            const inDev = it.id === 'ideals-board-lead';
+            return (
             <a key={it.id} href={`case.html?id=${it.id}`} style={{
               padding: 36, borderRadius: 'var(--r-lg)',
               background: i === 0 ? 'var(--accent)' : 'rgba(251,247,239,0.05)',
@@ -425,6 +427,12 @@ function Leadership({ lang }) {
               color: i === 0 ? 'var(--paper-2)' : 'var(--paper-2)',
               display: 'grid', gap: 20, position: 'relative', overflow: 'hidden',
             }}>
+              {inDev && (
+                <div aria-hidden="true" style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, height: 10, zIndex: 3,
+                  backgroundImage: 'repeating-linear-gradient(45deg, #FFD400 0 12px, #14110E 12px 24px)',
+                }}/>
+              )}
               <div style={{
                 position: 'absolute', top: 28, right: 28,
                 width: 44, height: 44, borderRadius: 999,
@@ -463,7 +471,8 @@ function Leadership({ lang }) {
                 ))}
               </ul>
             </a>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -528,13 +537,13 @@ function Portfolio({ lang }) {
   const list = PROJECTS[lang];
   return (
     <section id="portfolio" style={{ borderBottom: '1px solid var(--line)' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 40px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: 48 }}>
+      <div className="r-pad r-sec-pad" style={{ maxWidth: 1280, margin: '0 auto', padding: '96px 40px' }}>
+        <div className="r-exphead" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: 48 }}>
           <div>
             <div className="eyebrow eyebrow-accent" style={{ marginBottom: 16 }}>
               {t.sections.portfolioK}
             </div>
-            <h2 className="tracking-tighter" style={{
+            <h2 className="tracking-tighter r-h2" style={{
               fontSize: 64, fontWeight: 700, lineHeight: 0.98, margin: 0, color: 'var(--ink)',
             }}>{t.sections.portfolioT}</h2>
           </div>
@@ -543,7 +552,7 @@ function Portfolio({ lang }) {
           }}>{lang === 'ru' ? 'Все проекты' : 'All projects'} <Icon.arrow/></a>
         </div>
 
-        <div style={{
+        <div className="r-bento" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
           gridAutoRows: 'minmax(220px, auto)',
@@ -572,15 +581,15 @@ function Contact({ lang }) {
   const t = COPY[lang];
   return (
     <section id="contact" style={{ background: 'var(--bone-2)', borderBottom: '1px solid var(--line)' }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '120px 40px' }}>
+      <div className="r-pad r-sec-pad" style={{ maxWidth: 1280, margin: '0 auto', padding: '120px 40px' }}>
         <div className="eyebrow eyebrow-accent" style={{ marginBottom: 16 }}>{t.sections.contactK}</div>
         <h2 className="tracking-tighter" style={{
           fontSize: 'clamp(64px, 8.5vw, 152px)', fontWeight: 800, lineHeight: 0.92, margin: '0 0 28px',
           color: 'var(--ink)', maxWidth: 1100,
         }}>
-          {lang === 'ru' ? 'Давайте' : "Let's"}<br/>
+          {lang === 'ru' ? 'Мои' : "Let's"}<br/>
           <span style={{ color: 'var(--accent)', fontStyle: 'italic', fontWeight: 700 }}>
-            {lang === 'ru' ? 'поговорим.' : 'talk.'}
+            {lang === 'ru' ? 'контакты.' : 'talk.'}
           </span>
         </h2>
         <p style={{
@@ -609,7 +618,7 @@ function Contact({ lang }) {
         </div>
       </div>
 
-      <footer style={{
+      <footer className="r-pad r-foot" style={{
         borderTop: '1px solid var(--line)', padding: '24px 40px',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         maxWidth: 1280, margin: '0 auto',

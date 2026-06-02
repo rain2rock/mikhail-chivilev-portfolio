@@ -339,7 +339,7 @@ function CaseStudyPage({ id }) {
             fontSize: 'clamp(44px, 6vw, 92px)', fontWeight: 800, lineHeight: 0.95, margin: '0 0 32px', color: 'var(--ink)',
           }}>
             {lang === 'ru'
-              ? <span style={{ color: 'var(--accent)', fontStyle: 'italic', fontWeight: 700 }}>Мои контакты</span>
+              ? <>Мои <span style={{ color: 'var(--accent)', fontStyle: 'italic', fontWeight: 700 }}>контакты</span></>
               : <>Let's <span style={{ color: 'var(--accent)', fontStyle: 'italic', fontWeight: 700 }}>talk.</span></>
             }
           </h2>
