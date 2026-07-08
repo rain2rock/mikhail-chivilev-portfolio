@@ -24,6 +24,112 @@ function useRotator(items, period = 2200) {
   return items[i];
 }
 
+/* ---------------------- Dot grid (hero micro-interaction) -----
+   A fixed grid of dots sits invisibly under the hero. Dots inside a
+   radius around the cursor fade in; they fade back out as the cursor
+   moves away — no trail. Canvas-based, rAF idles when nothing glows,
+   and it bows out for reduced-motion. */
+function DotTrail({ enabled = true, maxOpacity = 0.22, size = 2.4, radius = 130, spacing = 30 }) {
+  const canvasRef = React.useRef(null);
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !enabled) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+
+    const ctx = canvas.getContext('2d');
+    const parent = canvas.parentElement;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let w = 0, h = 0;
+    let cols = 0, rows = 0, offX = 0, offY = 0;
+    let cur = null;                       // per-dot current alpha (0..1 of maxOpacity)
+    const buildGrid = () => {
+      cols = Math.ceil(w / spacing) + 1;
+      rows = Math.ceil(h / spacing) + 1;
+      offX = (w - (cols - 1) * spacing) / 2;
+      offY = (h - (rows - 1) * spacing) / 2;
+      cur = new Float32Array(cols * rows);
+    };
+    const resize = () => {
+      const r = parent.getBoundingClientRect();
+      w = r.width; h = r.height;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildGrid();
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(parent);
+
+    let mx = -9999, my = -9999;           // cursor pos (px within canvas)
+    let inside = false;
+    let raf = null;
+    const r2 = radius * radius;
+    const ease = 0.14;                     // lerp toward target each frame
+
+    const tick = () => {
+      ctx.clearRect(0, 0, w, h);
+      let anyGlow = false;
+      for (let j = 0; j < rows; j++) {
+        const y = offY + j * spacing;
+        for (let i = 0; i < cols; i++) {
+          const idx = j * cols + i;
+          const x = offX + i * spacing;
+          let target = 0;
+          if (inside) {
+            const dx = x - mx, dy = y - my;
+            const d2 = dx * dx + dy * dy;
+            if (d2 < r2) {
+              const t = 1 - Math.sqrt(d2) / radius;  // 1 at center → 0 at edge
+              target = t * t;                         // soft falloff
+            }
+          }
+          let a = cur[idx] + (target - cur[idx]) * ease;
+          if (a < 0.002) a = 0;
+          cur[idx] = a;
+          if (a > 0) {
+            anyGlow = true;
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${(a * maxOpacity).toFixed(3)})`;
+            ctx.fill();
+          }
+        }
+      }
+      if (anyGlow || inside) { raf = requestAnimationFrame(tick); }
+      else { raf = null; }
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+
+    const onMove = (e) => {
+      const r = canvas.getBoundingClientRect();
+      mx = e.clientX - r.left; my = e.clientY - r.top;
+      inside = mx >= 0 && my >= 0 && mx <= w && my <= h;
+      kick();
+    };
+    const onLeave = () => { inside = false; kick(); };
+
+    parent.addEventListener('pointermove', onMove, { passive: true });
+    parent.addEventListener('pointerleave', onLeave, { passive: true });
+    return () => {
+      parent.removeEventListener('pointermove', onMove);
+      parent.removeEventListener('pointerleave', onLeave);
+      ro.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [enabled, maxOpacity, size, radius, spacing]);
+
+  return (
+    <canvas ref={canvasRef} aria-hidden="true" style={{
+      position: 'absolute', inset: 0, width: '100%', height: '100%',
+      pointerEvents: 'none', zIndex: 0,
+    }}/>
+  );
+}
+
 /* ---------------------- Top bar (minimal) ------------------- */
 function TopBar({ lang, setLang }) {
   const t = COPY[lang];
@@ -85,18 +191,24 @@ function TopBar({ lang, setLang }) {
 }
 
 /* ---------------------- Hero (pure manifesto) --------------- */
-function Hero({ lang }) {
+function Hero({ lang, dots }) {
   const t = COPY[lang];
   const role = useRotator(t.roles, 2400);
+  const d = dots || {};
   return (
     <section id="top" style={{
       background: 'var(--accent)', color: 'var(--paper-2)',
       display: 'flex', flexDirection: 'column',
       borderBottom: '1px solid var(--line)',
+      position: 'relative', overflow: 'hidden',
     }}>
+      {d.enabled !== false && (
+        <DotTrail enabled={d.enabled !== false} maxOpacity={d.opacity ?? 0.22}
+          size={d.size ?? 2.4} radius={d.radius ?? 130} spacing={d.spacing ?? 30} />
+      )}
       <div className="r-pad" style={{
         maxWidth: 1280, margin: '0 auto', width: '100%',
-        padding: '96px 40px 80px', flex: 1,
+        padding: '96px 40px 80px', flex: 1, position: 'relative', zIndex: 1,
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
       }}>
         <h1 className="tracking-tighter" style={{
@@ -134,7 +246,7 @@ function Hero({ lang }) {
       <div style={{
         borderTop: '1px solid rgba(251,247,239,0.22)',
         background: 'rgba(0,0,0,0.10)',
-        padding: '18px 0', overflow: 'hidden',
+        padding: '18px 0', overflow: 'hidden', position: 'relative', zIndex: 1,
         maskImage: 'linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)',
       }}>
         <div style={{
