@@ -1,8 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0; url=home.html">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mikhail · Portfolio Redesign</title>
+  <link rel="stylesheet" href="tokens.css"/>
+  <style>
+    /* Make design canvas chrome match our warm palette */
+    html, body { background: #E8E1CE; }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="homepage-main.jsx"></script>
+  <script type="text/babel" src="heroes.jsx"></script>
+  <script type="text/babel" src="experience-variants.jsx"></script>
+  <script type="text/babel" src="bento-variants.jsx"></script>
 </head>
-<body></body>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { DesignCanvas, DCSection, DCArtboard } = window;
+    const { MainHomepage } = window;
+    const { HeroA, HeroB, HeroC } = window.HeroVariants;
+    const { ExpA, ExpB, ExpC } = window.ExpVariants;
+    const { BentoA, BentoB, BentoC } = window.BentoVariants;
+
+    function App() {
+      return (
+        <DesignCanvas
+          title="Portfolio Redesign · Mikhail Chivilev"
+          subtitle="Confident & bold direction · warm cream + terracotta · Manrope (EN + RU)"
+        >
+          {/* MAIN PROPOSAL — full homepage */}
+          <DCSection id="main" title="01 · Main proposal — full homepage redesign">
+            <DCArtboard id="main-en" label="Full homepage · English" width={1440} height={3900}>
+              <MainHomepage initialLang="en" />
+            </DCArtboard>
+            <DCArtboard id="main-ru" label="Full homepage · Russian (Cyrillic check)" width={1440} height={3900}>
+              <MainHomepage initialLang="ru" />
+            </DCArtboard>
+          </DCSection>
+
+          {/* HERO VARIATIONS */}
+          <DCSection id="heroes" title="02 · Hero variations — pick a direction">
+            <DCArtboard id="hero-a-en" label="A · Display Wall · EN" width={1280} height={780}><HeroA lang="en"/></DCArtboard>
+            <DCArtboard id="hero-a-ru" label="A · Display Wall · RU" width={1280} height={780}><HeroA lang="ru"/></DCArtboard>
+            <DCArtboard id="hero-b-en" label="B · Split Editorial · EN" width={1280} height={780}><HeroB lang="en"/></DCArtboard>
+            <DCArtboard id="hero-b-ru" label="B · Split Editorial · RU" width={1280} height={780}><HeroB lang="ru"/></DCArtboard>
+            <DCArtboard id="hero-c-en" label="C · Manifesto · EN" width={1280} height={780}><HeroC lang="en"/></DCArtboard>
+            <DCArtboard id="hero-c-ru" label="C · Manifesto · RU" width={1280} height={780}><HeroC lang="ru"/></DCArtboard>
+          </DCSection>
+
+          {/* EXPERIENCE CARD VARIATIONS */}
+          <DCSection id="experience" title="03 · Experience card variations — same data, three layouts">
+            <DCArtboard id="exp-a-en" label="A · Editorial Timeline · EN" width={1100} height={620}><ExpA lang="en"/></DCArtboard>
+            <DCArtboard id="exp-a-ru" label="A · Editorial Timeline · RU" width={1100} height={620}><ExpA lang="ru"/></DCArtboard>
+            <DCArtboard id="exp-b-en" label="B · Card with pull-stats · EN" width={1100} height={680}><ExpB lang="en"/></DCArtboard>
+            <DCArtboard id="exp-b-ru" label="B · Card with pull-stats · RU" width={1100} height={680}><ExpB lang="ru"/></DCArtboard>
+            <DCArtboard id="exp-c-en" label="C · Magazine Block · EN" width={1100} height={620}><ExpC lang="en"/></DCArtboard>
+            <DCArtboard id="exp-c-ru" label="C · Magazine Block · RU" width={1100} height={620}><ExpC lang="ru"/></DCArtboard>
+          </DCSection>
+
+          {/* BENTO VARIATIONS */}
+          <DCSection id="bento" title="04 · Project section variations — pick a layout">
+            <DCArtboard id="bento-a-en" label="A · Asymmetric Bento · EN" width={1280} height={780}><BentoA lang="en"/></DCArtboard>
+            <DCArtboard id="bento-a-ru" label="A · Asymmetric Bento · RU" width={1280} height={780}><BentoA lang="ru"/></DCArtboard>
+            <DCArtboard id="bento-b-en" label="B · Numbered Index · EN" width={1280} height={780}><BentoB lang="en"/></DCArtboard>
+            <DCArtboard id="bento-b-ru" label="B · Numbered Index · RU" width={1280} height={780}><BentoB lang="ru"/></DCArtboard>
+            <DCArtboard id="bento-c-en" label="C · Editorial Covers · EN" width={1280} height={1200}><BentoC lang="en"/></DCArtboard>
+            <DCArtboard id="bento-c-ru" label="C · Editorial Covers · RU" width={1280} height={1200}><BentoC lang="ru"/></DCArtboard>
+          </DCSection>
+        </DesignCanvas>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
 </html>

@@ -24,32 +24,21 @@ function useRotator(items, period = 2200) {
   return items[i];
 }
 
-/* ---------------------- Dot grid (hero micro-interaction) -----
-   A fixed grid of dots sits invisibly under the hero. Dots inside a
-   radius around the cursor fade in; they fade back out as the cursor
-   moves away — no trail. Canvas-based, rAF idles when nothing glows,
-   and it bows out for reduced-motion. */
-function DotTrail({ enabled = true, maxOpacity = 0.22, size = 2.4, radius = 130, spacing = 30 }) {
+/* ---------------------- Shader-style gradient (hero bg) --------
+   Canvas 2D approximation of an animated sphere-gradient shader:
+   a terracotta base with slow-drifting cream/ink blooms blended in,
+   plus a faint static grain. No WebGL/deps — cheap, GPU-composited. */
+function ShaderGradientBG({ enabled = true }) {
   const canvasRef = React.useRef(null);
   React.useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !enabled) return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) return;
 
     const ctx = canvas.getContext('2d');
     const parent = canvas.parentElement;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w = 0, h = 0;
-    let cols = 0, rows = 0, offX = 0, offY = 0;
-    let cur = null;                       // per-dot current alpha (0..1 of maxOpacity)
-    const buildGrid = () => {
-      cols = Math.ceil(w / spacing) + 1;
-      rows = Math.ceil(h / spacing) + 1;
-      offX = (w - (cols - 1) * spacing) / 2;
-      offY = (h - (rows - 1) * spacing) / 2;
-      cur = new Float32Array(cols * rows);
-    };
     const resize = () => {
       const r = parent.getBoundingClientRect();
       w = r.width; h = r.height;
@@ -58,74 +47,55 @@ function DotTrail({ enabled = true, maxOpacity = 0.22, size = 2.4, radius = 130,
       canvas.style.width = w + 'px';
       canvas.style.height = h + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      buildGrid();
     };
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(parent);
 
-    let mx = -9999, my = -9999;           // cursor pos (px within canvas)
-    let inside = false;
     let raf = null;
-    const r2 = radius * radius;
-    const ease = 0.14;                     // lerp toward target each frame
+    const speed = 0.00006;
 
-    const tick = () => {
+    const blob = (t, phase, ampX, ampY, cx, cy) => ({
+      x: cx + Math.sin(t * speed * 2 * Math.PI + phase) * ampX,
+      y: cy + Math.cos(t * speed * 1.6 * Math.PI + phase) * ampY,
+    });
+
+    const draw = (t) => {
       ctx.clearRect(0, 0, w, h);
-      let anyGlow = false;
-      for (let j = 0; j < rows; j++) {
-        const y = offY + j * spacing;
-        for (let i = 0; i < cols; i++) {
-          const idx = j * cols + i;
-          const x = offX + i * spacing;
-          let target = 0;
-          if (inside) {
-            const dx = x - mx, dy = y - my;
-            const d2 = dx * dx + dy * dy;
-            if (d2 < r2) {
-              const t = 1 - Math.sqrt(d2) / radius;  // 1 at center → 0 at edge
-              target = t * t;                         // soft falloff
-            }
-          }
-          let a = cur[idx] + (target - cur[idx]) * ease;
-          if (a < 0.002) a = 0;
-          cur[idx] = a;
-          if (a > 0) {
-            anyGlow = true;
-            ctx.beginPath();
-            ctx.arc(x, y, size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255,255,255,${(a * maxOpacity).toFixed(3)})`;
-            ctx.fill();
-          }
-        }
-      }
-      if (anyGlow || inside) { raf = requestAnimationFrame(tick); }
-      else { raf = null; }
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+      ctx.fillStyle = '#D84B33';
+      ctx.fillRect(0, 0, w, h);
 
-    const onMove = (e) => {
-      const r = canvas.getBoundingClientRect();
-      mx = e.clientX - r.left; my = e.clientY - r.top;
-      inside = mx >= 0 && my >= 0 && mx <= w && my <= h;
-      kick();
-    };
-    const onLeave = () => { inside = false; kick(); };
+      const b1 = blob(t, 0, w * 0.22, h * 0.18, w * 0.72, h * 0.28);
+      const g1 = ctx.createRadialGradient(b1.x, b1.y, 0, b1.x, b1.y, Math.max(w, h) * 0.55);
+      g1.addColorStop(0, 'rgba(244,235,223,0.34)');
+      g1.addColorStop(1, 'rgba(244,235,223,0)');
+      ctx.globalCompositeOperation = 'soft-light';
+      ctx.fillStyle = g1;
+      ctx.fillRect(0, 0, w, h);
 
-    parent.addEventListener('pointermove', onMove, { passive: true });
-    parent.addEventListener('pointerleave', onLeave, { passive: true });
-    return () => {
-      parent.removeEventListener('pointermove', onMove);
-      parent.removeEventListener('pointerleave', onLeave);
-      ro.disconnect();
-      if (raf) cancelAnimationFrame(raf);
+      const b2 = blob(t, Math.PI * 0.7, w * 0.18, h * 0.22, w * 0.24, h * 0.78);
+      const g2 = ctx.createRadialGradient(b2.x, b2.y, 0, b2.x, b2.y, Math.max(w, h) * 0.5);
+      g2.addColorStop(0, 'rgba(25,23,19,0.26)');
+      g2.addColorStop(1, 'rgba(25,23,19,0)');
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = g2;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.globalCompositeOperation = 'source-over';
     };
-  }, [enabled, maxOpacity, size, radius, spacing]);
+
+    if (reduce) { draw(0); return () => ro.disconnect(); }
+
+    const loop = (ts) => { draw(ts); raf = requestAnimationFrame(loop); };
+    raf = requestAnimationFrame(loop);
+    return () => { ro.disconnect(); if (raf) cancelAnimationFrame(raf); };
+  }, [enabled]);
 
   return (
     <canvas ref={canvasRef} aria-hidden="true" style={{
       position: 'absolute', inset: 0, width: '100%', height: '100%',
       pointerEvents: 'none', zIndex: 0,
+      filter: 'url(#heroGrain)',
     }}/>
   );
 }
@@ -200,15 +170,19 @@ function Hero({ lang, dots }) {
       background: 'var(--accent)', color: 'var(--paper-2)',
       display: 'flex', flexDirection: 'column',
       borderBottom: '1px solid var(--line)',
-      position: 'relative', overflow: 'hidden',
+      position: 'relative', overflow: 'hidden', isolation: 'isolate',
     }}>
-      {d.enabled !== false && (
-        <DotTrail enabled={d.enabled !== false} maxOpacity={d.opacity ?? 0.22}
-          size={d.size ?? 2.4} radius={d.radius ?? 130} spacing={d.spacing ?? 30} />
-      )}
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <filter id="heroGrain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="n"/>
+          <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.045 0"/>
+          <feComposite operator="over" in2="SourceGraphic"/>
+        </filter>
+      </svg>
+      <ShaderGradientBG enabled={d.gradient !== false} />
       <div className="r-pad" style={{
         maxWidth: 1280, margin: '0 auto', width: '100%',
-        padding: '96px 40px 80px', flex: 1, position: 'relative', zIndex: 1,
+        padding: '96px 40px 80px', flex: 1, position: 'relative', zIndex: 2,
         display: 'flex', flexDirection: 'column', justifyContent: 'center',
       }}>
         <h1 className="tracking-tighter" style={{
@@ -246,7 +220,7 @@ function Hero({ lang, dots }) {
       <div style={{
         borderTop: '1px solid rgba(251,247,239,0.22)',
         background: 'rgba(0,0,0,0.10)',
-        padding: '18px 0', overflow: 'hidden', position: 'relative', zIndex: 1,
+        padding: '18px 0', overflow: 'hidden', position: 'relative', zIndex: 2,
         maskImage: 'linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent)',
       }}>
         <div style={{
@@ -747,9 +721,14 @@ function Contact({ lang }) {
 }
 
 /* ---------------------- Root --------------------------------- */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "gradientEnabled": true
+}/*EDITMODE-END*/;
+
 function MainHomepage({ initialLang }) {
   const [persistedLang, setLang] = window.usePortfolioLang();
   const lang = initialLang || persistedLang;
+  const [tw, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
 
   // Persist scroll position; restore it when returning from a case page.
   React.useEffect(() => {
@@ -775,13 +754,19 @@ function MainHomepage({ initialLang }) {
   return (
     <div style={{ background: 'var(--bone)', color: 'var(--ink)', minHeight: '100%' }}>
       <TopBar lang={lang} setLang={setLang}/>
-      <Hero lang={lang}/>
+      <Hero lang={lang} dots={{ gradient: tw.gradientEnabled }}/>
       <AboutBand lang={lang}/>
       <Skills lang={lang}/>
       <Experience lang={lang}/>
       <Leadership lang={lang}/>
       <Portfolio lang={lang}/>
       <Contact lang={lang}/>
+
+      <window.TweaksPanel title="Tweaks">
+        <window.TweakSection label={lang === 'ru' ? 'Градиент фона (первый блок)' : 'Background gradient (hero)'} />
+        <window.TweakToggle label={lang === 'ru' ? 'Включить' : 'Enabled'} value={tw.gradientEnabled}
+          onChange={(v) => setTweak('gradientEnabled', v)} />
+      </window.TweaksPanel>
     </div>
   );
 }
